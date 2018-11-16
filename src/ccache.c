@@ -768,7 +768,16 @@ out:
 static char *
 make_relative_path(char *path)
 {
-	if (str_eq(conf->base_dir, "") || !str_startswith(path, conf->base_dir)) {
+	if (str_eq(conf->base_dir, "")) {
+		return path;
+	}
+
+	// handle that base_dir is a symlink
+	static char * real_base_dir = NULL;
+	if (real_base_dir == NULL) {
+		real_base_dir = x_realpath(conf->base_dir);
+	}
+	if (!str_startswith(path, real_base_dir) && !str_startswith(path, conf->base_dir))  {
 		return path;
 	}
 
