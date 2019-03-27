@@ -1,6 +1,101 @@
 ccache news
 ===========
 
+ccache 3.7
+----------
+unreleased
+
+Changes
+~~~~~~~
+
+* Fixed crash when the debug mode is enabled and the output file is in a
+  non-writable directory, e.g. when the output file is `/dev/null`.
+
+* Fixed an issue when printing very large log messages to the debug log.
+
+* Fixed bugs related to support for `-gsplit-dwarf`. Previously ccache could
+  produce an incorrect link to the `.dwo` file in the `.o` file.
+
+* Compilations with /dev/null as the input file are now cached.
+
+* ccache now knows how to contruct the object filename if no “-o” option is
+  given and the source filename does not include a `.` or ends with a `.`.
+
+* Fixed a temporary file leak when depend mode is enabled and the compiler
+  produces standard error output.
+
+* Fixed a bug in the “depend mode” where a manifest hash only could be
+  associated with one set of header dependencies.
+
+* Manifest files did not get marked as used on direct cache hits, so the LRU
+  cache cleanup would incorrectly remove them eventually. This has now been
+  fixed.
+
+
+ccache 3.6
+----------
+Release date: 2019-01-14
+
+Changes
+~~~~~~~
+
+- ccache now has an opt-in ``depend mode''. When enabled, ccache never executes
+  the preprocessor, which results in much lower cache miss overhead at the
+  expense of a lower potential cache hit rate. The depend mode is only possible
+  to use when the compiler option `-MD` or `-MMD` is used.
+
+- Added support for GCC's `-ffile-prefix-map` option. The `-fmacro-prefix-map`
+  option is now also skipped from the hash.
+
+- Added support for multiple `-fsanitize-blacklist` arguments.
+
+- ccache now includes the environment variables `LANG`, `LC_ALL`, `LC_CTYPE`
+  and `LC_MESSAGES` in the hash since they may affect localization of compiler
+  warning messages. Set sloppiness to `locale` to opt out of this.
+
+- Fixed a problem due to Clang overwriting the output file when compiling an
+  assembler file.
+
+- Clarified the manual to explain the reasoning behind the “file_macro”
+  sloppiness setting in a better way.
+
+- ccache now handles several levels of nonexistent directories when rewriting
+  absolute paths to relative.
+
+- A new sloppiness setting `clang_index_store` makes ccache skip the Clang
+  compiler option `-index-store-path` and its argument when computing the
+  manifest hash. This is useful if you use Xcode, which uses an index store
+  path derived from the local project path. Note that the index store won't be
+  updated correctly on cache hits if you enable this option.
+
+- Rename sloppiness `no_system_headers` to `system_headers` for consistency
+  with other options. `no_system_headers` can still be used as an
+  (undocumented) alias.
+
+- The GCC variables “DEPENDENCIES_OUTPUT” and “SUNPRO_DEPENDENCIES” are now
+  supported correctly.
+
+- The algorithm that scans for `__DATE_` and `__TIME__` tokens in the hashed
+  source code now doesn't produce false positives for tokens where `__DATE__`
+  or `__TIME__` is a substring.
+
+
+ccache 3.5.1
+------------
+Release date: 2019-01-02
+
+Changes
+~~~~~~~
+
+- Added missing getopt_long.c source file to release archive.
+
+- Fixed (harmless) compiler warnings when building ccache object files.
+
+- CFLAGS is no longer passed to the linker when linking ccache.
+
+- Improved development mode build flags.
+
+
 ccache 3.5
 ----------
 Release date: 2018-10-15

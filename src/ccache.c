@@ -1282,7 +1282,6 @@ update_manifest_file(void)
 	}
 	if (manifest_put(manifest_path, cached_obj_hash, included_files)) {
 		cc_log("Added object file hash to %s", manifest_path);
-		update_mtime(manifest_path);
 		if (x_stat(manifest_path, &st) == 0) {
 			stats_update_size(file_size(&st) - old_size, old_size == 0 ? 1 : 0);
 #ifdef HAVE_LIBMEMCACHED
@@ -2343,6 +2342,7 @@ calculate_object_hash(struct args *args, struct hash *hash, int direct_mode)
 		object_hash = manifest_get(conf, manifest_path);
 		if (object_hash) {
 			cc_log("Got object file hash from manifest");
+			update_mtime(manifest_path);
 		} else {
 			cc_log("Did not find object file hash in manifest");
 		}
