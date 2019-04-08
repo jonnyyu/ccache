@@ -65,6 +65,7 @@ if test "$ac_compiler_clang" = yes; then
     more_warnings="$more_warnings -Wno-sign-conversion"
     more_warnings="$more_warnings -Wno-cast-align"
     more_warnings="$more_warnings -Wno-cast-qual"
+    more_warnings="$more_warnings -Wno-reserved-id-macro"
 fi
 
 AC_ARG_ENABLE(more_warnings,
